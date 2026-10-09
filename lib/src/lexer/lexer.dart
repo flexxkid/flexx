@@ -212,7 +212,7 @@ class Lexer {
 
     final text = source.substring(_start, _current);
 
-    final type = _keywords[text];
+    final type = keywords[text];
 
     if (type != null) {
       _addToken(type);
@@ -224,11 +224,12 @@ class Lexer {
   // ------------------------------------------------------------
   // Keywords
   // ------------------------------------------------------------
-
-  static const Map<String, TokenType> _keywords = {
+  final keywords = {
     'Flexx': TokenType.flexx,
     'print': TokenType.print,
     'let': TokenType.let,
+    'true': TokenType.trueKeyword,
+    'false': TokenType.falseKeyword,
   };
 
   // ------------------------------------------------------------

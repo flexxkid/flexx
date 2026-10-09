@@ -1,12 +1,16 @@
-import 'package:flexx/src/ast/statement.dart';
+import 'package:flexx/src/interpreter/interpreter.dart';
 import 'package:flexx/src/lexer/lexer.dart';
 import 'package:flexx/src/parser/parser.dart';
+import 'package:flexx/src/runtime/environment.dart';
 
 void main() {
   const source = '''
 Flexx {
-  let radius = 7;
-  print radius;
+  print true && false;
+  print true || false;
+  print !true;
+  print !false;
+  print (10 > 5) && (7 == 7);
 }
 ''';
 
@@ -16,10 +20,8 @@ Flexx {
   final parser = Parser(tokens);
   final program = parser.parse();
 
-  print('Program parsed successfully.');
-  print('Statements: ${program.statements.length}');
+  final environment = Environment();
+  final interpreter = Interpreter(environment);
 
-  for (final statement in program.statements) {
-    print('Statement: ${statement.runtimeType}');
-  }
+  interpreter.interpret(program);
 }

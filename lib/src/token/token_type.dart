@@ -3,12 +3,12 @@ enum TokenType {
   flexx,
   print,
   let,
-
   // Literals
   identifier,
   number,
   string,
-
+  trueKeyword,
+  falseKeyword,
   // Arithmetic operators
   plus,
   minus,

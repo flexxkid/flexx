@@ -71,7 +71,33 @@ class Parser {
   }
 
   Expression _expression() {
-    return _equality();
+    return _or();
+  }
+
+  Expression _or() {
+    var expression = _and();
+
+    while (_match(TokenType.or)) {
+      final operator = _previous();
+      final right = _and();
+
+      expression = BinaryExpression(expression, operator, right);
+    }
+
+    return expression;
+  }
+
+  Expression _and() {
+    var expression = _equality();
+
+    while (_match(TokenType.and)) {
+      final operator = _previous();
+      final right = _equality();
+
+      expression = BinaryExpression(expression, operator, right);
+    }
+
+    return expression;
   }
 
   Expression _equality() {
@@ -147,6 +173,14 @@ class Parser {
       return LiteralExpression(_previous().literal);
     }
 
+    if (_match(TokenType.trueKeyword)) {
+      return const LiteralExpression(true);
+    }
+
+    if (_match(TokenType.falseKeyword)) {
+      return const LiteralExpression(false);
+    }
+
     if (_match(TokenType.string)) {
       return LiteralExpression(_previous().literal);
     }
@@ -154,6 +188,8 @@ class Parser {
     if (_match(TokenType.identifier)) {
       return VariableExpression(_previous());
     }
+
+    // Keep the remaining code unchanged.
 
     if (_match(TokenType.leftParen)) {
       final expression = _expression();
