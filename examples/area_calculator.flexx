@@ -1,0 +1,60 @@
+Flexx {
+  print "================================";
+  print "       FLEXX AREA CALCULATOR";
+  print "================================";
+
+  let length = 10;
+  let width = 5;
+  let rectangleArea = length * width;
+
+  print "";
+  print "RECTANGLE";
+  print "Length: " + length;
+  print "Width: " + width;
+  print "Area: " + rectangleArea;
+
+  let base = 8;
+  let height = 6;
+  let triangleArea = (base * height) / 2;
+
+  print "";
+  print "TRIANGLE";
+  print "Base: " + base;
+  print "Height: " + height;
+  print "Area: " + triangleArea;
+
+  let radius = 7;
+  let circleArea = PI * radius * radius;
+
+  print "";
+  print "CIRCLE";
+  print "Radius: " + radius;
+  print "Area: " + circleArea;
+
+  let side = 4;
+  let squareArea = side * side;
+
+  print "";
+  print "SQUARE";
+  print "Side: " + side;
+  print "Area: " + squareArea;
+
+  print "";
+  print "SQUARE AREA TABLE";
+
+  let currentSide = 1;
+
+  while (currentSide <= 5) {
+    let currentArea = currentSide * currentSide;
+
+    print "Side: " + currentSide;
+    print "Area: " + currentArea;
+
+    currentSide = currentSide + 1;
+  }
+
+  print "";
+  print "================================";
+  print "       CALCULATIONS COMPLETE";
+  print "================================";
+}

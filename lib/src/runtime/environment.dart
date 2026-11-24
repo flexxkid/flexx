@@ -1,9 +1,13 @@
 class Environment {
   final Environment? enclosing;
 
-  final Map<String, Object?> _values = {'PI': 3.141592653589793};
+  final Map<String, Object?> _values = {};
 
-  Environment({this.enclosing});
+  Environment({this.enclosing}) {
+    if (enclosing == null) {
+      _values['PI'] = 3.141592653589793;
+    }
+  }
 
   void define(String name, Object? value) {
     _values[name] = value;
