@@ -228,6 +228,9 @@ class Lexer {
     'Flexx': TokenType.flexx,
     'print': TokenType.print,
     'let': TokenType.let,
+    'if': TokenType.ifKeyword,
+    'else': TokenType.elseKeyword,
+    'while': TokenType.whileKeyword,
     'true': TokenType.trueKeyword,
     'false': TokenType.falseKeyword,
   };

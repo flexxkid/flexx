@@ -36,3 +36,10 @@ class GroupingExpression extends Expression {
 
   const GroupingExpression(this.expression);
 }
+
+class AssignExpression extends Expression {
+  final Token name;
+  final Expression value;
+
+  const AssignExpression(this.name, this.value);
+}

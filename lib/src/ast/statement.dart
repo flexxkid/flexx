@@ -29,3 +29,24 @@ class VariableDeclaration extends Statement {
 
   const VariableDeclaration(this.name, this.initializer);
 }
+
+class IfStatement extends Statement {
+  final Expression condition;
+  final Statement thenBranch;
+  final Statement? elseBranch;
+
+  const IfStatement(this.condition, this.thenBranch, this.elseBranch);
+}
+
+class BlockStatement extends Statement {
+  final List<Statement> statements;
+
+  const BlockStatement(this.statements);
+}
+
+class WhileStatement extends Statement {
+  final Expression condition;
+  final Statement body;
+
+  const WhileStatement(this.condition, this.body);
+}

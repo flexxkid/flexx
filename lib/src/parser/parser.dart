@@ -39,7 +39,73 @@ class Parser {
       return _printStatement();
     }
 
+    if (_match(TokenType.ifKeyword)) {
+      return _ifStatement();
+    }
+    if (_match(TokenType.whileKeyword)) {
+      return _whileStatement();
+    }
     return _expressionStatement();
+  }
+
+  Statement _ifStatement() {
+    _consume(TokenType.leftParen, 'Expected "(" after "if".');
+
+    final condition = _expression();
+
+    _consume(TokenType.rightParen, 'Expected ")" after condition.');
+
+    _consume(TokenType.leftBrace, 'Expected "{" before if branch.');
+
+    final thenStatements = <Statement>[];
+
+    while (!_check(TokenType.rightBrace) && !_isAtEnd()) {
+      thenStatements.add(_statement());
+    }
+
+    _consume(TokenType.rightBrace, 'Expected "}" after if branch.');
+
+    final thenBranch = BlockStatement(thenStatements);
+
+    Statement? elseBranch;
+
+    if (_match(TokenType.elseKeyword)) {
+      _consume(TokenType.leftBrace, 'Expected "{" before else branch.');
+
+      final elseStatements = <Statement>[];
+
+      while (!_check(TokenType.rightBrace) && !_isAtEnd()) {
+        elseStatements.add(_statement());
+      }
+
+      _consume(TokenType.rightBrace, 'Expected "}" after else branch.');
+
+      elseBranch = BlockStatement(elseStatements);
+    }
+
+    return IfStatement(condition, thenBranch, elseBranch);
+  }
+
+  Statement _whileStatement() {
+    _consume(TokenType.leftParen, 'Expected "(" after "while".');
+
+    final condition = _expression();
+
+    _consume(TokenType.rightParen, 'Expected ")" after condition.');
+
+    _consume(TokenType.leftBrace, 'Expected "{" before while body.');
+
+    final statements = <Statement>[];
+
+    while (!_check(TokenType.rightBrace) && !_isAtEnd()) {
+      statements.add(_statement());
+    }
+
+    _consume(TokenType.rightBrace, 'Expected "}" after while body.');
+
+    final body = BlockStatement(statements);
+
+    return WhileStatement(condition, body);
   }
 
   Statement _variableDeclaration() {
@@ -71,7 +137,24 @@ class Parser {
   }
 
   Expression _expression() {
-    return _or();
+    return _assignment();
+  }
+
+  Expression _assignment() {
+    final expression = _or();
+
+    if (_match(TokenType.assign)) {
+      final operator = _previous();
+      final value = _assignment();
+
+      if (expression is VariableExpression) {
+        return AssignExpression(expression.name, value);
+      }
+
+      throw _error(operator, 'Invalid assignment target.');
+    }
+
+    return expression;
   }
 
   Expression _or() {

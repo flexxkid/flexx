@@ -3,6 +3,9 @@ enum TokenType {
   flexx,
   print,
   let,
+  ifKeyword,
+  elseKeyword,
+  whileKeyword,
   // Literals
   identifier,
   number,
@@ -15,7 +18,6 @@ enum TokenType {
   multiply,
   divide,
   modulo,
-
   // Comparison operators
   equal,
   notEqual,

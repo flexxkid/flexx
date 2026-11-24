@@ -5,8 +5,11 @@ import '../token/token_type.dart';
 
 class Interpreter {
   final Environment environment;
+  late Environment _currentEnvironment;
 
-  Interpreter(this.environment);
+  Interpreter(this.environment) {
+    _currentEnvironment = environment;
+  }
 
   void interpret(Program program) {
     for (final statement in program.statements) {
@@ -18,7 +21,7 @@ class Interpreter {
     if (statement is VariableDeclaration) {
       final value = _evaluate(statement.initializer);
 
-      environment.define(statement.name.lexeme, value);
+      _currentEnvironment.define(statement.name.lexeme, value);
       return;
     }
 
@@ -32,7 +35,50 @@ class Interpreter {
       return;
     }
 
+    if (statement is IfStatement) {
+      final condition = _evaluate(statement.condition);
+
+      if (_truthy(condition)) {
+        _execute(statement.thenBranch);
+      } else if (statement.elseBranch != null) {
+        _execute(statement.elseBranch!);
+      }
+
+      return;
+    }
+
+    if (statement is WhileStatement) {
+      while (_truthy(_evaluate(statement.condition))) {
+        _execute(statement.body);
+      }
+
+      return;
+    }
+
+    if (statement is BlockStatement) {
+      _executeBlock(
+        statement.statements,
+        Environment(enclosing: _currentEnvironment),
+      );
+
+      return;
+    }
+
     throw Exception('Unsupported statement: ${statement.runtimeType}');
+  }
+
+  void _executeBlock(List<Statement> statements, Environment environment) {
+    final previousEnvironment = _currentEnvironment;
+
+    try {
+      _currentEnvironment = environment;
+
+      for (final statement in statements) {
+        _execute(statement);
+      }
+    } finally {
+      _currentEnvironment = previousEnvironment;
+    }
   }
 
   Object? _evaluate(Expression expression) {
@@ -40,8 +86,16 @@ class Interpreter {
       return expression.value;
     }
 
+    if (expression is AssignExpression) {
+      final value = _evaluate(expression.value);
+
+      _currentEnvironment.assign(expression.name.lexeme, value);
+
+      return value;
+    }
+
     if (expression is VariableExpression) {
-      return environment.get(expression.name.lexeme);
+      return _currentEnvironment.get(expression.name.lexeme);
     }
 
     if (expression is GroupingExpression) {
